@@ -16,4 +16,41 @@ ruta_archivo = f"data/{archivo}"
 
 # Cargar datos
 df = cargar_datos(ruta_archivo)
-st.success(f"Archivo '{archivo}' cargado correctamente ✅") # Mensaje de confirmación 
+st.success(f"Archivo '{archivo}' cargado correctamente ✅")
+
+# Mostrar DataFrame
+if st.checkbox("Mostrar data"):
+    st.dataframe(df)
+
+# Seleccionar columna numérica
+columnas_numericas = df.select_dtypes(include='number').columns.tolist()
+
+if columnas_numericas:
+    columna = st.selectbox("Columna de analisis", columnas_numericas)
+
+    # Calcular estadísticas
+    st.subheader("📊 Estadísticas básicas")
+    stats = calcular_estadisticas(df, columna)
+    st.write(stats)
+
+    # Graficar con Matplotlib
+    st.subheader("📈 Gráfico estatico")
+    fig_mat = graficar_matplotlib(df, columna)
+    st.pyplot(fig_mat)
+
+    # Graficar interactivo con Plotly
+    st.subheader("⚡ Gráfico interactivo")
+    fig_plotly = graficar_plotly(df, columna)
+    st.plotly_chart(fig_plotly)
+
+
+      # Nueva opción: graficar todas las columnas
+    if st.checkbox("Mostrar gráfico con todas las columnas numéricas"):
+        st.subheader("🌐 Todas las columnas numéricas juntas")
+        fig_all = graficar_todas_columnas(df, columnas_numericas)
+        st.plotly_chart(fig_all)
+
+else:
+    st.warning("⚠️ No se encontraron columnas numéricas en este archivo.")
+
+st.sidebar.info("Universidad Técnica Particular de Loja - Geología")
